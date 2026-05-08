@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Agent Management Dashboard</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Main navigation">
+        <div class="brand">
+          <span class="brand-mark">AI</span>
+          <div>
+            <strong>Agent Board</strong>
+            <span>Manual dashboard</span>
+          </div>
+        </div>
+
+        <nav class="nav-list" aria-label="Dashboard sections">
+          <a class="nav-item is-active" href="#dashboard">ダッシュボード</a>
+          <a class="nav-item" href="#agents">エージェント一覧</a>
+          <a class="nav-item" href="#notes">進捗メモ</a>
+          <a class="nav-item" href="#weekly">週次レビュー</a>
+          <a class="nav-item" href="#settings">設定</a>
+        </nav>
+
+        <div class="sidebar-note">
+          <span>最終同期</span>
+          <strong id="lastSavedText">未保存</strong>
+        </div>
+      </aside>
+
+      <main class="main-view" id="dashboard">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Human-managed AI operations</p>
+            <h1>AIエージェント管理ダッシュボード</h1>
+          </div>
+          <div class="top-actions" aria-label="Data controls">
+            <button class="ghost-button" id="resetButton" type="button">初期データに戻す</button>
+            <button class="primary-button" id="saveButton" type="button">保存</button>
+          </div>
+        </header>
+
+        <section class="summary-grid" aria-label="Summary">
+          <article class="summary-card">
+            <span class="summary-label">稼働中</span>
+            <strong id="activeCount">0</strong>
+            <small>進行中の作業</small>
+          </article>
+          <article class="summary-card">
+            <span class="summary-label">確認待ち</span>
+            <strong id="waitingCount">0</strong>
+            <small>人間の確認が必要</small>
+          </article>
+          <article class="summary-card">
+            <span class="summary-label">完了</span>
+            <strong id="doneCount">0</strong>
+            <small>今週クローズ</small>
+          </article>
+          <article class="summary-card accent">
+            <span class="summary-label">今週の進捗</span>
+            <strong id="weeklyAverage">0%</strong>
+            <small>平均進捗率</small>
+          </article>
+        </section>
+
+        <div class="content-grid">
+          <section class="workspace-panel" id="agents" aria-labelledby="agentsHeading">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Manual tracker</p>
+                <h2 id="agentsHeading">エージェント一覧</h2>
+              </div>
+              <select id="statusFilter" aria-label="状態で絞り込み">
+                <option value="all">すべて</option>
+                <option value="active">稼働中</option>
+                <option value="waiting">確認待ち</option>
+                <option value="done">完了</option>
+                <option value="paused">保留</option>
+              </select>
+            </div>
+
+            <div class="agent-grid" id="agentGrid"></div>
+          </section>
+
+          <aside class="right-panel" aria-label="Daily notes">
+            <section class="side-section" id="notes">
+              <div class="section-heading compact">
+                <h2>今日のメモ</h2>
+                <span class="date-pill" id="todayLabel"></span>
+              </div>
+              <textarea id="dailyMemo" rows="8" placeholder="今日の気づき、判断待ち、次回見たい点など"></textarea>
+            </section>
+
+            <section class="side-section">
+              <h2>次のアクション</h2>
+              <ul class="action-list" id="nextActionList"></ul>
+            </section>
+
+            <section class="side-section">
+              <h2>要確認リスト</h2>
+              <ul class="check-list" id="reviewList"></ul>
+            </section>
+          </aside>
+        </div>
+
+        <section class="edit-panel" aria-labelledby="editHeading">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Quick edit</p>
+              <h2 id="editHeading">入力フォーム</h2>
+            </div>
+            <p class="helper-text">カードを選んで進捗、次の作業、メモを編集できます。</p>
+          </div>
+
+          <form id="agentForm" class="agent-form">
+            <label>
+              エージェント
+              <select id="agentSelect"></select>
+            </label>
+            <label>
+              エージェント名
+              <input id="nameInput" type="text" placeholder="新しいAIエージェント名" required />
+            </label>
+            <label class="wide-field">
+              役割
+              <input id="roleInput" type="text" placeholder="担当領域や使い方" required />
+            </label>
+            <label>
+              状態
+              <select id="statusInput">
+                <option value="active">稼働中</option>
+                <option value="waiting">確認待ち</option>
+                <option value="done">完了</option>
+                <option value="paused">保留</option>
+              </select>
+            </label>
+            <label>
+              優先度
+              <select id="priorityInput">
+                <option value="high">高</option>
+                <option value="medium">中</option>
+                <option value="low">低</option>
+              </select>
+            </label>
+            <label>
+              進捗率
+              <input id="progressInput" type="range" min="0" max="100" step="5" />
+              <span class="range-value" id="progressValue">0%</span>
+            </label>
+            <label>
+              確認頻度
+              <input id="checkFrequencyInput" type="text" placeholder="毎日 / 週1回 など" />
+            </label>
+            <label>
+              次回確認日
+              <input id="nextCheckInput" type="date" />
+            </label>
+            <label class="wide-field">
+              次の作業
+              <input id="nextTaskInput" type="text" placeholder="次に確認・実行すること" />
+            </label>
+            <label class="wide-field">
+              メモ
+              <textarea id="noteInput" rows="4" placeholder="引き継ぎメモや判断材料"></textarea>
+            </label>
+            <div class="form-actions">
+              <button class="ghost-button" id="newAgentButton" type="button">新規追加モード</button>
+              <button class="danger-button" id="deleteAgentButton" type="button">選択中を削除</button>
+              <button class="primary-button" id="submitAgentButton" type="submit">編集内容を反映</button>
+            </div>
+          </form>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
