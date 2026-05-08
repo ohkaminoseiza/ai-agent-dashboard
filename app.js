@@ -1,7 +1,7 @@
 const STORAGE_KEY = "manual-ai-agent-dashboard-v2";
 const LEGACY_STORAGE_KEY = "manual-ai-agent-dashboard-v1";
 const SHEETS_WEB_APP_URL =
-  "https://script.google.com/macros/s/AKfycbzCGiXfXvC237gV-Sx-DLlyLUOhyW6-CPZqw4RKCwETdpXAfc3nv6Bi4cbaZxDrfQLL9A/exec";
+  "https://script.google.com/macros/s/AKfycbwaqZlyTV49-30OK5lfRMHYQ_oqDtbTbYEPT07KiHzdQBcUay9otvZmF_GkdHCb4XTo6A/exec";
 const USE_GOOGLE_SHEETS = true;
 
 // Data model is intentionally split like future Google Sheets tabs:
